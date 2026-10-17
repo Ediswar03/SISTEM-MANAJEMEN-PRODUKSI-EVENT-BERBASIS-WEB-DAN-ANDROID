@@ -5,12 +5,21 @@
     "scheme": "epmscrew",
     "version": "0.1.0",
     "orientation": "portrait",
+    "userInterfaceStyle": "dark",
     "platforms": ["android"],
     "android": {
-      "package": "id.epms.crew"
+      "package": "id.epms.crew",
+      "adaptiveIcon": {
+        "backgroundColor": "#6366f1"
+      }
     },
-    "extra": {
-      "apiUrl": "http://localhost:4000/api/v1"
-    }
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": []
+        }
+      ]
+    ]
   }
 }

@@ -2,9 +2,9 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { api, ApiError } from '../../lib/api-client.js';
-import type { UserInfo, ListResponse } from '../../lib/api-client.js';
-import { formatDate } from '../page.js';
+import { api, ApiError } from '../../lib/api-client';
+import type { UserInfo, ListResponse } from '../../lib/api-client';
+import { formatDate } from '../utils';
 
 interface CreateForm {
   email: string;

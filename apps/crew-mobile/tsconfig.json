@@ -1,10 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "noEmit": true,
-    "lib": ["ES2022", "DOM"],
-    "types": ["node"]
+    "strict": true,
+    "jsx": "react-native",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "App.tsx", "index.js"]
 }

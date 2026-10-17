@@ -3,22 +3,31 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { api, clearTokens, getAccessToken, getRefreshToken } from '../lib/api-client.js';
-import type { UserInfo } from '../lib/api-client.js';
+import { api, clearTokens, getAccessToken, getRefreshToken } from '../lib/api-client';
+import type { UserInfo } from '../lib/api-client';
 
-const NAV_ITEMS = [
+// Navigation items — exact match Figma
+const NAV_SECTIONS = [
   {
-    section: 'Main',
+    label: null,
     links: [
-      { href: '/dashboard', label: 'Dashboard', icon: IconGrid },
-      { href: '/dashboard/events', label: 'Events', icon: IconCalendar },
+      { href: '/dashboard',           icon: '▦', label: 'Dashboard' },
+      { href: '/dashboard/events',    icon: '▣', label: 'Manajemen Event' },
+      { href: '/dashboard/schedule',  icon: '▦', label: 'Kalender Jadwal' },
     ],
   },
   {
-    section: 'Resources',
+    label: 'SUMBER DAYA',
     links: [
-      { href: '/dashboard/equipment', label: 'Equipment', icon: IconBox },
-      { href: '/dashboard/crew', label: 'Crew', icon: IconUsers },
+      { href: '/dashboard/equipment', icon: '◈', label: 'Resource & Alat' },
+      { href: '/dashboard/crew',      icon: '♙', label: 'Manajemen Kru' },
+    ],
+  },
+  {
+    label: 'ANALITIK',
+    links: [
+      { href: '/dashboard/conflicts', icon: '▲', label: 'Validasi Konflik' },
+      { href: '/dashboard/reports',   icon: '▤', label: 'Laporan' },
     ],
   },
 ];
@@ -31,7 +40,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     const token = getAccessToken();
     if (!token) { router.replace('/login'); return; }
-
     api.getMe()
       .then((res) => setUser(res.data))
       .catch(() => { clearTokens(); router.replace('/login'); });
@@ -48,141 +56,212 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!user) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-base)' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f7fa' }}>
         <div className="spinner" style={{ width: '32px', height: '32px' }} />
       </div>
     );
   }
 
+  // Initials for avatar
+  const initials = user.fullName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+
   return (
-    <div className="app-shell">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <span>⚡ EPMS</span>
-          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
-            Production Management
+    <div style={{ display: 'flex', minHeight: '100dvh', background: '#f5f7fa' }}>
+      {/* ── Sidebar ─────────────────────────────────────────────────────────── */}
+      <aside
+        style={{
+          position: 'fixed', inset: '0 auto 0 0', zIndex: 20,
+          width: '248px', display: 'flex', flexDirection: 'column',
+          background: 'var(--sidebar-bg)',
+          padding: '28px 16px',
+        }}
+      >
+        {/* Brand */}
+        <div style={{ padding: '0 12px' }}>
+          <p className="font-bold-face" style={{ fontSize: '21px', lineHeight: 1, color: '#fff' }}>STAGEFLOW</p>
+          <p className="font-medium-face" style={{ marginTop: '9px', fontSize: '10px', color: '#adbacf', letterSpacing: '0.08em' }}>
+            EVENT PRODUCTION
           </p>
         </div>
 
-        <nav className="sidebar-nav">
-          {NAV_ITEMS.map((section) => (
-            <div key={section.section}>
-              <div className="nav-section-label">{section.section}</div>
-              {section.links.map((link) => {
-                const isActive = pathname === link.href || (link.href !== '/dashboard' && pathname.startsWith(link.href));
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`nav-link${isActive ? ' active' : ''}`}
-                  >
-                    <link.icon size={16} />
-                    {link.label}
-                  </Link>
-                );
-              })}
+        {/* Nav */}
+        <nav style={{ marginTop: '42px', flex: 1 }} aria-label="Navigasi utama">
+          {NAV_SECTIONS.map((section, si) => (
+            <div key={si} style={{ marginBottom: '8px' }}>
+              {section.label && (
+                <p
+                  className="font-bold-face"
+                  style={{
+                    fontSize: '10px', color: 'var(--sidebar-section-text)',
+                    padding: '12px 14px 6px', letterSpacing: '0.08em',
+                  }}
+                >
+                  {section.label}
+                </p>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                {section.links.map((link) => {
+                  const isActive = link.href === '/dashboard'
+                    ? pathname === '/dashboard'
+                    : pathname.startsWith(link.href);
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '12px',
+                        height: '42px', padding: '0 14px',
+                        borderRadius: '9px',
+                        fontSize: '13px', textDecoration: 'none',
+                        transition: 'all 0.15s',
+                        background: isActive ? 'var(--sidebar-active-bg)' : 'transparent',
+                        color: isActive ? 'var(--sidebar-active)' : 'var(--sidebar-text)',
+                        fontFamily: isActive ? "'Inter:Medium', sans-serif" : "'Inter:Regular', sans-serif",
+                        fontWeight: isActive ? 500 : 400,
+                      }}
+                    >
+                      <span
+                        className="symbol-regular"
+                        aria-hidden="true"
+                        style={{ width: '14px', textAlign: 'center', fontSize: '12px', flexShrink: 0 }}
+                      >
+                        {link.icon}
+                      </span>
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           ))}
+
+          {/* Preferences */}
+          <div style={{ marginTop: '20px', borderTop: '1px solid var(--sidebar-border)', paddingTop: '16px' }}>
+            <p className="font-bold-face" style={{ fontSize: '10px', color: '#8c9cb2', padding: '0 14px 8px', letterSpacing: '0.08em' }}>
+              PREFERENSI
+            </p>
+            <Link
+              href="/dashboard/settings"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                height: '38px', padding: '0 14px',
+                fontSize: '13px', color: 'var(--sidebar-text)', textDecoration: 'none',
+                transition: 'color 0.15s',
+                borderRadius: '9px',
+              }}
+            >
+              <span className="symbol-regular" aria-hidden="true">⚙</span>
+              Pengaturan
+            </Link>
+          </div>
         </nav>
 
-        <div className="sidebar-footer">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-            <div className="avatar">{user.fullName.charAt(0).toUpperCase()}</div>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: '13px', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {user.fullName}
-              </div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                <span className={`badge badge-${user.role.toLowerCase()}`} style={{ padding: '1px 6px', fontSize: '10px' }}>{user.role}</span>
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => void handleLogout()}
-            className="btn btn-secondary btn-sm"
-            style={{ width: '100%', justifyContent: 'center' }}
-            id="logout-btn"
+        {/* User profile footer */}
+        <button
+          onClick={() => void handleLogout()}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            borderRadius: '8px', padding: '8px 12px',
+            background: 'transparent', border: 'none', cursor: 'pointer',
+            width: '100%', textAlign: 'left',
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#202d43'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+          id="logout-btn"
+          title="Klik untuk sign out"
+        >
+          <span
+            className="font-bold-face"
+            style={{
+              display: 'grid', placeItems: 'center',
+              width: '38px', height: '38px', borderRadius: '50%',
+              background: '#385482', fontSize: '12px', color: '#fff',
+              flexShrink: 0,
+            }}
           >
-            <IconLogout size={13} />
-            Sign out
-          </button>
-        </div>
+            {initials}
+          </span>
+          <span style={{ minWidth: 0 }}>
+            <span
+              className="font-medium-face"
+              style={{ display: 'block', fontSize: '13px', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+            >
+              {user.fullName}
+            </span>
+            <span style={{ display: 'block', marginTop: '3px', fontSize: '11px', color: '#a8b8cc' }}>
+              {user.role === 'ADMIN' ? 'Administrator' : 'Crew'}
+            </span>
+          </span>
+        </button>
       </aside>
 
-      {/* Main */}
-      <main className="main-content">
-        <div className="topbar">
+      {/* ── Main content ─────────────────────────────────────────────────────── */}
+      <main style={{ marginLeft: '248px', flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
+        {/* Topbar */}
+        <div
+          style={{
+            height: '52px', background: '#fff',
+            borderBottom: '1px solid #e0e5ed',
+            display: 'flex', alignItems: 'center',
+            padding: '0 32px', gap: '12px',
+            position: 'sticky', top: 0, zIndex: 10,
+            boxShadow: '0 1px 0 #e0e5ed',
+          }}
+        >
           <div style={{ flex: 1 }}>
             <BreadCrumb pathname={pathname} />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div className="avatar" style={{ width: '28px', height: '28px', fontSize: '11px' }}>
-              {user.fullName.charAt(0).toUpperCase()}
-            </div>
-            <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{user.email}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span
+              className="font-bold-face"
+              style={{
+                display: 'grid', placeItems: 'center',
+                width: '30px', height: '30px', borderRadius: '50%',
+                background: '#385482', fontSize: '11px', color: '#fff',
+              }}
+            >
+              {initials}
+            </span>
+            <span style={{ fontSize: '13px', color: '#6e7a8f' }}>{user.email}</span>
           </div>
         </div>
-        <div className="page-content">{children}</div>
+
+        {/* Page content */}
+        <div style={{ flex: 1, padding: '28px 40px 28px 32px' }}>
+          {children}
+        </div>
       </main>
     </div>
   );
 }
 
 function BreadCrumb({ pathname }: { pathname: string }) {
-  const parts = pathname.replace('/dashboard', '').split('/').filter(Boolean);
+  const LABELS: Record<string, string> = {
+    dashboard: 'Dashboard',
+    events: 'Events',
+    schedule: 'Schedule',
+    equipment: 'Resource & Alat',
+    crew: 'Manajemen Kru',
+    conflicts: 'Conflicts',
+    reports: 'Reports',
+    new: 'New',
+  };
+  const parts = pathname.split('/').filter(Boolean);
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-muted)' }}>
-      <Link href="/dashboard" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
-        Dashboard
-      </Link>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#6e7a8f' }}>
       {parts.map((part, i) => (
         <React.Fragment key={i}>
-          <span>/</span>
-          <span style={{ color: i === parts.length - 1 ? 'var(--text-primary)' : 'var(--text-secondary)', textTransform: 'capitalize' }}>
-            {part.replace(/-/g, ' ')}
+          {i > 0 && <span style={{ opacity: 0.5 }}>/</span>}
+          <span style={{
+            color: i === parts.length - 1 ? '#1f293b' : '#6e7a8f',
+            fontWeight: i === parts.length - 1 ? 500 : 400,
+            textTransform: 'capitalize',
+          }}>
+            {LABELS[part] ?? part.replace(/-/g, ' ')}
           </span>
         </React.Fragment>
       ))}
     </div>
-  );
-}
-
-// ─── Icon components (inline SVG to avoid external dep) ───────────────────────
-type IconProps = { size?: number };
-
-function IconGrid({ size = 16 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
-    </svg>
-  );
-}
-function IconCalendar({ size = 16 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-}
-function IconBox({ size = 16 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />
-    </svg>
-  );
-}
-function IconUsers({ size = 16 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-function IconLogout({ size = 16 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
   );
 }

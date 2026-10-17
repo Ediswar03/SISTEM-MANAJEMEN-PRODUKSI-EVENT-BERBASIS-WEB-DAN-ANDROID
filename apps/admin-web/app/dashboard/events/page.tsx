@@ -3,9 +3,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { api, ApiError } from '../../lib/api-client.js';
-import type { EventInfo, ListResponse } from '../../lib/api-client.js';
-import { StatusBadge, formatDate } from '../page.js';
+import { api, ApiError } from '../../lib/api-client';
+import type { EventInfo, ListResponse } from '../../lib/api-client';
+import { StatusBadge, formatDate } from '../utils';
 
 const STATUS_OPTIONS = ['', 'DRAFT', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
 

@@ -3,9 +3,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api, ApiError } from '../../../lib/api-client.js';
-import type { EventDetail, EquipmentInfo, UserInfo } from '../../../lib/api-client.js';
-import { StatusBadge, formatDateRange, formatDate } from '../../page.js';
+import { api, ApiError } from '../../../lib/api-client';
+import type { EventDetail, EquipmentInfo, UserInfo } from '../../../lib/api-client';
+import { StatusBadge, formatDateRange, formatDate } from '../../page';
 
 const TRANSITIONS: Record<string, string[]> = {
   DRAFT: ['CONFIRMED', 'CANCELLED'],

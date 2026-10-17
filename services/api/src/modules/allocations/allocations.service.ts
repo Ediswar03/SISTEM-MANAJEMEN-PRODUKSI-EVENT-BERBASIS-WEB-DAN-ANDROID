@@ -103,7 +103,12 @@ export async function createAllocation(
       throw new HttpError(
         409,
         'INSUFFICIENT_STOCK',
-        `Only ${available} unit(s) available in the requested interval (requested ${input.quantity}).`,
+        `Peralatan sudah digunakan pada rentang waktu tersebut. Hanya ${available} unit tersedia (diminta ${input.quantity}).`,
+        {
+          available,
+          requested: input.quantity,
+          requestedInterval: { startAt: startAt.toISOString(), endAt: endAt.toISOString() },
+        },
       );
     }
 
@@ -192,7 +197,12 @@ export async function updateAllocation(
       throw new HttpError(
         409,
         'INSUFFICIENT_STOCK',
-        `Only ${available} unit(s) available in the new interval (requested ${newQuantity}).`,
+        `Peralatan sudah digunakan pada rentang waktu tersebut. Hanya ${available} unit tersedia (diminta ${newQuantity}).`,
+        {
+          available,
+          requested: newQuantity,
+          requestedInterval: { startAt: newStartAt.toISOString(), endAt: newEndAt.toISOString() },
+        },
       );
     }
 

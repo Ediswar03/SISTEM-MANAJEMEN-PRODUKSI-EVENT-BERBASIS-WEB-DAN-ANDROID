@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAccessToken } from './lib/api-client.js';
+import { getAccessToken } from './lib/api-client';
 
 export default function RootPage() {
   const router = useRouter();

@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, ApiError } from '../../../lib/api-client.js';
-import type { CategoryInfo } from '../../../lib/api-client.js';
+import { api, ApiError } from '../../../lib/api-client';
+import type { CategoryInfo } from '../../../lib/api-client';
 
 const CONDITIONS = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'UNUSABLE'];
 

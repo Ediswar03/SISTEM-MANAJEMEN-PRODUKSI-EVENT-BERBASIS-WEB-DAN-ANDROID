@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api, ApiError } from '../../../lib/api-client.js';
-import type { EquipmentDetail } from '../../../lib/api-client.js';
-import { formatDate } from '../../page.js';
+import { api, ApiError } from '../../../lib/api-client';
+import type { EquipmentDetail } from '../../../lib/api-client';
+import { formatDate } from '../../page';
 
 const CONDITION_COLOR: Record<string, string> = {
   EXCELLENT: '#22c55e', GOOD: '#4ade80', FAIR: '#f59e0b', POOR: '#ef4444', UNUSABLE: '#6b7280',

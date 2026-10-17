@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, ApiError } from '../../../lib/api-client.js';
-import type { UserInfo } from '../../../lib/api-client.js';
+import { api, ApiError } from '../../../lib/api-client';
+import type { UserInfo } from '../../../lib/api-client';
 
 interface FormState {
   code: string;

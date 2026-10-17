@@ -3,9 +3,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { api, ApiError } from '../../lib/api-client.js';
-import type { CategoryInfo, EquipmentInfo, ListResponse } from '../../lib/api-client.js';
-import { StatusBadge } from '../page.js';
+import { api, ApiError } from '../../lib/api-client';
+import type { CategoryInfo, EquipmentInfo, ListResponse } from '../../lib/api-client';
+import { StatusBadge } from '../utils';
 
 const CONDITION_BADGE: Record<string, string> = {
   EXCELLENT: 'badge-completed',
